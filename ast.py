@@ -8,12 +8,15 @@ class Statement:
 class Expr:
 	pass
 
-class ExprStatement(Statement):
+class ExprStmt(Statement):
 	expr: Expr
 
+# both are optional: if you have only an expr, then you execute an expression and return its value; only a statement, execute it and return Void
+# if you've got both, then you execute the statements, then the expression
+# this is basically how Rust works
 class Block(NamedTuple, Expr):
-	expr: Expr
-	next_expr: Expr
+	statement: List[Statement]
+	return_expr: Expr
 
 class LValue(NamedTuple):
 	identifier: str
