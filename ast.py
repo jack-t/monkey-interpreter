@@ -5,10 +5,13 @@ from enum import Enum
 class Statement:
 	pass
 
+class Program(NamedTuple):
+	stmts: List[Statement]
+
 class Expr:
 	pass
 
-class ExprStmt(Statement):
+class ExprStmt(NamedTuple, Statement):
 	expr: Expr
 
 # both are optional: if you have only an expr, then you execute an expression and return its value; only a statement, execute it and return Void
@@ -22,7 +25,7 @@ class LValue(NamedTuple):
 	identifier: str
 
 class LetStmt(NamedTuple, Statement):
-	bound: LValue
+	binding: LValue
 	expr: Expr
 
 class AssignExpr(NamedTuple, Expr):
@@ -45,8 +48,8 @@ class BinaryOp(Enum):
 
 class BinaryExpr(NamedTuple, Expr):
 	lhs: Expr
-	rhs: Expr
 	op: BinaryOp
+	rhs: Expr
 
 class UnaryOp(Enum):
 	NEGATION = 0
@@ -63,9 +66,9 @@ class FuncApplicationExpr(NamedTuple, Expr):
 	func: Expr
 	arguments: List[Expr]
 
-class FuncLiteralExpr(Expr):
+class FuncLiteralExpr(NamedTuple, Expr):
 	param_names: List[str]
-	statement: Expr
+	expr: Expr
 
 class LiteralExpr(Expr):
 	def __init__(self, value):
@@ -73,6 +76,11 @@ class LiteralExpr(Expr):
 			self.value = value
 		else:
 			raise Exception("literals can only be ints or strings")
+	def __repr__(self):
+		if isinstance(self.value, int):
+			return "literal {" + str(self.value) + "}"
+		else:
+			return "literal {\"" + self.value + "\"}"
 
 class ConditionalExpr(Expr):
 	condition: Expr

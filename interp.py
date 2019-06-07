@@ -1,4 +1,5 @@
 import lex
+import parse
 
 types = [
 	lex.text_type("let"),
@@ -29,10 +30,12 @@ types = [
 	lex.TokenType("<", r'^\<'),
 	lex.TokenType("<=", r'^\<\='),
 	lex.TokenType(">=", r'^\>\='),
-
 ]
 
 lexer = lex.Lexer(types)
+			
+tokens = lexer.tokenize("let y = fn(a,b){let x = fn(c,d){c+d}; x(a,b)};")
 
-for tok in lexer.tokenize(" let fn return if else 1 \"def\" 'abc' _Abc = == + - * / {}()[],;"):
-	print(tok)
+parser = parse.Parser(tokens)
+print(parser.parse())
+

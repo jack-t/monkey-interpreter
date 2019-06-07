@@ -24,7 +24,7 @@ class Token:
 		if self.payload != None:
 			return self.name + " {" + str(self.payload) + "}"
 		else:
-			return self.name
+			return "`" + self.name + "`"
 
 def text_type(text):
 	return TokenType(text, r"^" + text + r"\b")
