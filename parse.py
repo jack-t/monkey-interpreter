@@ -54,7 +54,7 @@ class Parser:
 			stmt = ExprStmt(ex)
 		else:
 			self.expect("let")
-			name = self.expect("identifier").payload
+			name = LValue(self.expect("identifier").payload)
 			self.expect("=")
 			ex = self.expr()
 			stmt = LetStmt(name, ex)

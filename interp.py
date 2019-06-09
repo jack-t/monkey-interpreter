@@ -1,5 +1,7 @@
 import lex
 import parse
+import scope
+import run
 
 types = [
 	lex.text_type("let"),
@@ -34,8 +36,11 @@ types = [
 
 lexer = lex.Lexer(types)
 			
-tokens = lexer.tokenize("let y = fn(a,b){let x = fn(c,d){c+d}; x(a,b)};")
+tokens = lexer.tokenize("let y = 2+3;")
 
 parser = parse.Parser(tokens)
-print(parser.parse())
+ast = parser.parse()
+print(ast)
+
+print(run.dispatch(scope.Scope(), ast))
 

@@ -18,7 +18,7 @@ class ExprStmt(NamedTuple, Statement):
 # if you've got both, then you execute the statements, then the expression
 # this is basically how Rust works
 class Block(NamedTuple, Expr):
-	statement: List[Statement]
+	stmts: List[Statement]
 	return_expr: Expr
 
 class LValue(NamedTuple):
@@ -84,8 +84,8 @@ class LiteralExpr(Expr):
 
 class ConditionalExpr(Expr):
 	condition: Expr
-	true_stmt: Expr
-	false_stmt: Expr
+	true: Expr
+	false: Expr
 
 class LoopExpr(Expr):
 	condition: Expr
