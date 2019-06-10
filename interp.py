@@ -36,11 +36,10 @@ types = [
 
 lexer = lex.Lexer(types)
 			
-tokens = lexer.tokenize("let y = 2+3;")
+tokens = lexer.tokenize("let y = fn(a) { a + 2 }; let x = y(2);")
 
 parser = parse.Parser(tokens)
 ast = parser.parse()
 print(ast)
 
 print(run.dispatch(scope.Scope(), ast))
-

@@ -1,4 +1,5 @@
 from ast import *
+import scope
 
 class Object:
 	def to_string(self):
@@ -22,11 +23,14 @@ class Object:
 		method = getattr(self, name)
 		if method is None:
 			raise Exception(self.to_string() + " does not respond to '" + name + "'")
-		method.__call__(*args)
+		return method.__call__(*args)
 
 class StringObject(Object):
 	def __init__(self, value):
 		self.value = value
+
+	def __str__(self):
+		return self.value
 
 	def to_string(self):
 		return StringObject(value)
@@ -44,7 +48,7 @@ class IntObject(Object):
 		self.value = value
 
 	def to_string(self):
-		return StringObject(str(value))
+		return StringObject(str(self.value))
 
 	def check_type(self, other):
 		if not isinstance(other, IntObject):
@@ -81,10 +85,24 @@ class BoolObject(Object):
 
 # doesn't have a name b/c one func could be bound in several places
 class FunctionObject(Object):
-	def __init__(self, scope, params, expr):
+	def __init__(self, scope, params, expr_lambda):
 		self.scope = scope
 		self.params = params
-		self.expr = expr
+		self.expr_lambda = expr_lambda
 
 	def apply(self, args):
-		print("Invoking '" + self.name + "'")
+		s = scope.Scope(self.scope)
+
+		if not isinstance(args, list):
+			args = [args]
+		
+		if not len(args) == len(self.params):
+			raise Exception("Func called with mismatched args and params")
+
+		for p in zip(self.params, args):
+			print("k; v")
+			print(p[0])
+			print(p[1])
+			s.bind(p[0], p[1])
+
+		return self.expr_lambda(s)

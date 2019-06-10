@@ -1,4 +1,4 @@
-from value import Object
+import value
 
 # lexical scopes exist on a stack: as you call functions, different symbols are "visible" to the running code.
 class Scope:
@@ -6,21 +6,22 @@ class Scope:
 		self.parent = parent
 		self.symbols = {}
 
-	def bind(self, key, value):
-		print(key)
-		print(value)
-		if not isinstance(value, Object):
+	def bind(self, key, val):
+		print("binding "+key+ " to "+str(val))
+		if not isinstance(val, value.Object):
 			raise Exception("Bound values must be Objects.")
 		if key in self.symbols:
 			raise Exception("Cannot let '" + key + "': it is already bound in this scope.")
-		self.symbols[key] = value
-		return value
+		self.symbols[key] = val
+		return val
 
-	def assign(self, key, value):
+	def assign(self, key, val):
+		if not isinstance(val, value.Object):
+			raise Exception("Bound values must be Objects.")
 		if key not in self.symbols:
 			raise Exception("Cannot assign '" + key + "': it is not yet bound in this scope.")
-		self.symbols[key] = value
-		return value
+		self.symbols[key] = val
+		return val
 
 	def get(self, key):
 		if key not in self.symbols:

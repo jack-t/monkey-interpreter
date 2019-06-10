@@ -23,6 +23,10 @@ def dispatch(scope, ast):
 		return dispatch_assign(scope, ast)
 	elif isinstance(ast, LiteralExpr):
 		return dispatch_literal(scope, ast)
+	elif isinstance(ast, SymbolReferenceExpr):
+		return dispatch_symbol(scope, ast)
+	else:
+		raise Exception("Can't dispatch " + str(ast))
 
 def dispatch_program(scope, ast):
 	for stmt in ast.stmts:
@@ -36,10 +40,11 @@ def dispatch_let_stmt(scope, ast):
 	scope.bind(ast.binding.identifier, dispatch(scope, ast.expr))
 
 def dispatch_fn_lit(scope, ast):
-	return FunctionObject(Scope(scope), ast.param_names, dispatch(scope, ast.expr))
+	return FunctionObject(Scope(scope), ast.param_names, lambda s: dispatch(s,ast.expr) )
 
 def dispatch_call(scope, ast):
 	func = dispatch(scope, ast.func)
+	print("func: " + str(func))
 	args = []
 	for arg in ast.arguments:
 		args.append(dispatch(scope, arg))
@@ -76,3 +81,6 @@ def dispatch_literal(scope, ast):
 		return IntObject(ast.value)
 	elif isinstance(ast.value, str):
 		return StringObject(ast.value)
+
+def dispatch_symbol(scope, ast):
+	return scope.get(ast.identifier)
