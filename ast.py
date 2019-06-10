@@ -72,7 +72,7 @@ class FuncLiteralExpr(NamedTuple, Expr):
 
 class LiteralExpr(Expr):
 	def __init__(self, value):
-		if isinstance(value, int) or isinstance(value, string):
+		if isinstance(value, int) or isinstance(value, str):
 			self.value = value
 		else:
 			raise Exception("literals can only be ints or strings")

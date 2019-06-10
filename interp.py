@@ -3,6 +3,7 @@ import parse
 import scope
 import run
 import value
+import sys
 
 types = [
 	lex.text_type("let"),
@@ -35,18 +36,20 @@ types = [
 	lex.TokenType(">=", r'^\>\='),
 ]
 
-lexer = lex.Lexer(types)
-			
-tokens = lexer.tokenize("let inp = input();")
+with open(sys.argv[1]) as code:
 
-parser = parse.Parser(tokens)
-ast = parser.parse()
+	lexer = lex.Lexer(types)
 
-sc = scope.Scope()
-sc.bind("print", value.ParamsBuiltinFunctionObject(lambda text: print(str(text))))
-sc.bind("input", value.NoParamsBuiltinFunctionObject(lambda: value.StringObject(input())))
-sc.bind("int", value.ParamsBuiltinFunctionObject(lambda s: value.IntObject(int(s.value))))
-sc.bind("string", value.ParamsBuiltinFunctionObject(lambda i: value.StringObject(str(i.value))))
+	tokens = lexer.tokenize(code.read())
+
+	parser = parse.Parser(tokens)
+	ast = parser.parse()
+
+	sc = scope.Scope()
+	sc.bind("print", value.ParamsBuiltinFunctionObject(lambda text: print(str(text))))
+	sc.bind("input", value.NoParamsBuiltinFunctionObject(lambda: value.StringObject(input())))
+	sc.bind("int", value.ParamsBuiltinFunctionObject(lambda s: value.IntObject(int(s.value))))
+	sc.bind("string", value.ParamsBuiltinFunctionObject(lambda i: value.StringObject(str(i.value))))
 
 
-run.dispatch(sc, ast)
+	run.dispatch(sc, ast)

@@ -94,7 +94,6 @@ class FunctionObject(Object):
 		self.expr_lambda = expr_lambda
 
 	def apply(self, *args):
-		print("args: " + args)
 		s = scope.Scope(self.scope)
 
 		if not isinstance(args, list):
@@ -103,7 +102,7 @@ class FunctionObject(Object):
 		if not len(*args) == len(self.params):
 			raise Exception("Func called with mismatched args and params")
 
-		for p in zip(self.params, args):
+		for p in zip(self.params, *args):
 			s.bind(p[0], p[1])
 
 		return self.expr_lambda(s)
