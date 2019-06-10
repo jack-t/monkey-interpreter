@@ -68,15 +68,10 @@ class Parser:
 			expr = self.block()
 		elif self.test_next("if"):
 			expr = self.if_expr()
-		elif self.test_next("fn"):
-			expr = self.fn_lit()
 		else:
 			expr = self.add()
 
-		if self.test_next("("):
-			return self.call(expr)
-		else:
-			return expr
+		return expr
 
 	def fn_lit(self):
 		self.expect("fn")
@@ -178,14 +173,21 @@ class Parser:
 		return expr
 
 	def primary(self):
+		expr = None
 		if self.test_next("integer-literal") or self.test_next("string-literal"):
-			return LiteralExpr(self.peel().payload)
+			expr = LiteralExpr(self.peel().payload)
+		elif self.test_next("fn"):
+			expr = self.fn_lit()
 		elif self.test_next("identifier"):
-			return SymbolReferenceExpr(self.expect("identifier").payload)
+			expr = SymbolReferenceExpr(self.expect("identifier").payload)
 		elif self.test_next("("):
 			self.expect("(")
 			expr = self.expr()
 			self.expect(")")
-			return expr
 		else:
 			raise Exception("Not sure what else could go here: " + " ".join(map(str, self.tokens)))
+
+		if self.test_next("("):
+			return self.call(expr)
+
+		return expr

@@ -37,16 +37,16 @@ types = [
 
 lexer = lex.Lexer(types)
 			
-tokens = lexer.tokenize("print(int(input()) + 3);")
+tokens = lexer.tokenize("let inp = input();")
 
 parser = parse.Parser(tokens)
 ast = parser.parse()
 
 sc = scope.Scope()
 sc.bind("print", value.ParamsBuiltinFunctionObject(lambda text: print(str(text))))
-sc.bind("input", value.NoParamsBuiltinFunctionObject(lambda: input()))
-sc.bind("int", value.NoParamsBuiltinFunctionObject(lambda s: int(s)))
-sc.bind("string", value.NoParamsBuiltinFunctionObject(lambda i: str(i)))
+sc.bind("input", value.NoParamsBuiltinFunctionObject(lambda: value.StringObject(input())))
+sc.bind("int", value.ParamsBuiltinFunctionObject(lambda s: value.IntObject(int(s.value))))
+sc.bind("string", value.ParamsBuiltinFunctionObject(lambda i: value.StringObject(str(i.value))))
 
 
 run.dispatch(sc, ast)
