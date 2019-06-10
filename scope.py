@@ -7,7 +7,6 @@ class Scope:
 		self.symbols = {}
 
 	def bind(self, key, val):
-		print("binding "+key+ " to "+str(val))
 		if not isinstance(val, value.Object):
 			raise Exception("Bound values must be Objects.")
 		if key in self.symbols:

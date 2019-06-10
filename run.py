@@ -40,11 +40,10 @@ def dispatch_let_stmt(scope, ast):
 	scope.bind(ast.binding.identifier, dispatch(scope, ast.expr))
 
 def dispatch_fn_lit(scope, ast):
-	return FunctionObject(Scope(scope), ast.param_names, lambda s: dispatch(s,ast.expr) )
+	return FunctionObject(scope, ast.param_names, lambda s: dispatch(s, ast.expr) )
 
 def dispatch_call(scope, ast):
 	func = dispatch(scope, ast.func)
-	print("func: " + str(func))
 	args = []
 	for arg in ast.arguments:
 		args.append(dispatch(scope, arg))

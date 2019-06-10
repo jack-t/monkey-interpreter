@@ -2,6 +2,7 @@ import lex
 import parse
 import scope
 import run
+import value
 
 types = [
 	lex.text_type("let"),
@@ -36,10 +37,16 @@ types = [
 
 lexer = lex.Lexer(types)
 			
-tokens = lexer.tokenize("let y = fn(a) { a + 2 }; let x = y(2);")
+tokens = lexer.tokenize("print(int(input()) + 3);")
 
 parser = parse.Parser(tokens)
 ast = parser.parse()
-print(ast)
 
-print(run.dispatch(scope.Scope(), ast))
+sc = scope.Scope()
+sc.bind("print", value.ParamsBuiltinFunctionObject(lambda text: print(str(text))))
+sc.bind("input", value.NoParamsBuiltinFunctionObject(lambda: input()))
+sc.bind("int", value.NoParamsBuiltinFunctionObject(lambda s: int(s)))
+sc.bind("string", value.NoParamsBuiltinFunctionObject(lambda i: str(i)))
+
+
+run.dispatch(sc, ast)

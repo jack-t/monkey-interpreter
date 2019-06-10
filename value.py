@@ -23,7 +23,10 @@ class Object:
 		method = getattr(self, name)
 		if method is None:
 			raise Exception(self.to_string() + " does not respond to '" + name + "'")
-		return method.__call__(*args)
+		if len(args) == 0:
+			return method.__call__()
+		else:
+			return method.__call__(*args)
 
 class StringObject(Object):
 	def __init__(self, value):
@@ -100,9 +103,20 @@ class FunctionObject(Object):
 			raise Exception("Func called with mismatched args and params")
 
 		for p in zip(self.params, args):
-			print("k; v")
-			print(p[0])
-			print(p[1])
 			s.bind(p[0], p[1])
 
 		return self.expr_lambda(s)
+
+class ParamsBuiltinFunctionObject(Object):
+	def __init__(self, action):
+		self.action = action
+
+	def apply(self, args):
+		return self.action(args)
+
+class NoParamsBuiltinFunctionObject(Object):
+	def __init__(self, action):
+		self.action = action
+
+	def apply(self):
+		return self.action()

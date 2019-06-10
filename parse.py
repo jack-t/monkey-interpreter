@@ -188,4 +188,4 @@ class Parser:
 			self.expect(")")
 			return expr
 		else:
-			raise Exception("Not sure what else could go here: " + ", ".join(map(str, self.tokens)))
+			raise Exception("Not sure what else could go here: " + " ".join(map(str, self.tokens)))
